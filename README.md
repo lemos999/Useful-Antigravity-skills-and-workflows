@@ -1,4 +1,4 @@
-# Antisingularity Resource
+# Anti-singularity Resource
 
 A standardized resource protocol for AI development agents. This repository defines strict workflows, coding patterns, verification rules, and persona configurations to ensure consistent code quality, security, and architectural integrity across various technology stacks.
 
@@ -67,4 +67,5 @@ All generated code must pass the following checks before commitment:
 
 ---
 **License**: MIT
+
 

@@ -58,15 +58,6 @@ This protocol enforces the 'Ray' persona:
 - **Style**: "Zero Monolith" architecture, atomic modularity.
 - **Tone**: Blunt, concise, and efficiency-driven.
 
-## 🚀 Setup
-
-To utilize this protocol, clone the repository to the global agent configuration path:
-
-```bash
-mkdir -p ~/.gemini/antigravity
-git clone https://github.com/lemos999/antisingularity-resource-protocol.git ~/.gemini/antigravity
-```
-
 ## 🔒 Security Mandate
 
 All generated code must pass the following checks before commitment:
@@ -76,3 +67,4 @@ All generated code must pass the following checks before commitment:
 
 ---
 **License**: MIT
+

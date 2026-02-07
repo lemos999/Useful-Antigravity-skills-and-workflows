@@ -1,28 +1,39 @@
-# Antisingularity Resource Protocol
+# Antisingularity (Useful Antigravity Skills & Workflows)
 
-## github : https://github.com/lemos999
+A collection of power-user workflows and skills for the Antigravity IDE, including the **Telegram Bridge** for connecting AI models to Telegram.
 
-## ⚡ Global Priority Mandate
+## 🚀 Quick Start (Installation)
 
-This project operates under the **Antisingularity Global Configuration**. 
+1.  **Clone this repository**
+    ```bash
+    git clone https://github.com/lemos999/Useful-Antigravity-skills-and-workflows.git
+    ```
 
-### 🚨 CRITICAL RESOURCE RESOLUTION RULE
-When resolving Workflows, Skills, or any Configuration files, you must **ALWAYS** prioritize the Global Paths over Local Paths.
+2.  **Open the folder in Antigravity IDE**
 
-**Resolution Order (Strict Compliance Required):**
+3.  **Run the automated setup workflow**
+    Type the following slash command in the chat:
+    ```
+    @/telegram-bridge
+    ```
 
-1.  **🥇 GLOBAL (Primary)**
-    *   `~/.gemini/antigravity/global_workflows/`
-    *   `~/.gemini/antigravity/skills/`
-    *   `~/.gemini/GEMINI.md`
+4.  **Follow the AI instructions**
+    - The agent will check your environment (Python 3.12+, Node.js, Git) automatically.
+    - It will guide you through installing `antigravity-claude-proxy` and `openclaw`.
+    - It will help you pair your Telegram bot.
 
-2.  **🥈 ANTISINGULARITY (Secondary)**
-    *   `./antisingularity/workflows/`
-    *   `./antisingularity/skills/`
+---
 
-3.  **🥉 LOCAL (Fallback - Only if not found above)**
-    *   `./.agent/workflows/`
-    *   `./.agent/skills/`
+## 📂 Included Components
 
-### 🚫 FAILURE PREVENTION
-Do not fail if a resource is missing locally. **IMMEDIATELY** check the Global Path. The absence of a local `.agent` folder is **NOT** an error; it indicates reliance on Global Configuration.
+- **Workflows (`.agent/workflows`)**:
+  - `telegram-bridge`: End-to-end setup guide for Telegram integration.
+  - `go-build`, `code-review`: specialized dev workflows.
+- **Skills (`.agent/skills`)**:
+  - Specialized prompts for specific engineering tasks.
+- **Install Scripts (`install/`)**:
+  - `check_env.ps1`: Automated environment verification script.
+
+## 🔗 References
+- **Proxy**: [antigravity-claude-proxy](https://github.com/badrisnarayanan/antigravity-claude-proxy)
+- **Gateway**: [openclaw](https://github.com/openclaw/openclaw)

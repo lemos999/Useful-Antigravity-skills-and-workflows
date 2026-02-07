@@ -6,8 +6,6 @@ description: Telegram → IDE AI auto-response system - Complete installation an
 
 Complete guide to set up automatic AI responses for Telegram messages using Antigravity IDE models.
 
----
-
 ## Table of Contents
 1. [Architecture Overview](#architecture-overview)
 2. [Prerequisites](#prerequisites)
@@ -24,17 +22,14 @@ Complete guide to set up automatic AI responses for Telegram messages using Anti
 
 ## Architecture Overview
 
-```
-┌─────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
-│   📱 Telegram   │────▶│  🦞 OpenClaw Gateway    │────▶│  🔌 antigravity-claude  │
-│     Message     │     │      (port 18789)       │     │      -proxy (8080)      │
-└─────────────────┘     └─────────────────────────┘     └─────────────────────────┘
-                                                                    │
-                                                                    ▼
-┌─────────────────┐     ┌─────────────────────────┐     ┌─────────────────────────┐
-│   📱 Telegram   │◀────│  🦞 OpenClaw Gateway    │◀────│  🤖 Antigravity IDE     │
-│   Auto-Reply    │     │                         │     │  Models (Claude/Gemini) │
-└─────────────────┘     └─────────────────────────┘     └─────────────────────────┘
+```mermaid
+graph LR
+    Telegram([📱 Telegram Message]) -->|Port 18789| Gateway[🦞 OpenClaw Gateway]
+    Gateway -->|Port 8080| Proxy[🔌 antigravity-claude-proxy]
+    Proxy --> IDE([🤖 Antigravity IDE Models])
+    IDE --> Proxy
+    Proxy --> Gateway
+    Gateway -->|Auto-Reply| Telegram
 ```
 
 **Components:**
@@ -49,10 +44,10 @@ Complete guide to set up automatic AI responses for Telegram messages using Anti
 ## Prerequisites
 
 ### Automated Setup (Recommended)
-You can automatically check and install all required tools by running the included script:
+**Run from the project root directory:**
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File "Antisingularity\install\check_env.ps1"
+powershell -ExecutionPolicy Bypass -File ".\install\check_env.ps1"
 ```
 
 This script will install:
@@ -91,13 +86,13 @@ npm install -g antigravity-claude-proxy@latest
 ```
 
 ### Step 1.3: Restore Credentials (Optional)
-If you have backed up credentials in `Antisingularity\credentials\proxy-accounts.json`, restore them now:
+If you have backed up credentials in `credentials\proxy-accounts.json`, restore them now:
 
 ```powershell
-if (Test-Path "Antisingularity\credentials\proxy-accounts.json") {
+if (Test-Path ".\credentials\proxy-accounts.json") {
     $Dest = "$env:USERPROFILE\.config\antigravity-proxy"
     New-Item -ItemType Directory -Path $Dest -Force | Out-Null
-    Copy-Item "Antisingularity\credentials\proxy-accounts.json" "$Dest\accounts.json" -Force
+    Copy-Item ".\credentials\proxy-accounts.json" "$Dest\accounts.json" -Force
     Write-Host "✅ Credentials restored."
 } else {
     Write-Host "ℹ️  No credential backup found. Skipping restore."
@@ -113,25 +108,16 @@ antigravity-claude-proxy start
 
 ### Step 1.4: Verify Installation
 1. Open browser: `http://localhost:8080`
-2. Check **Dashboard** tab:
-   - Total Accounts: 1+
-   - Active: 1+
-3. Check **Accounts** tab:
-   - Status should show "Operational" (green)
+2. Check **Dashboard** tab: Total Accounts: 1+, Active: 1+
+3. Check **Accounts** tab: Status should show "Operational" (green)
 
 ### Step 1.5: Link Account (if not auto-detected)
-1. Go to **Accounts** tab
-2. Click **"Add Account"**
-3. Select **"Connect Google Account"**
-4. Complete OAuth flow
-5. Verify account shows "Operational"
+1. Go to **Accounts** tab -> **"Add Account"** -> **"Connect Google Account"**
+2. Complete OAuth flow -> Verify account shows "Operational"
 
 ### Step 1.6: Verify Available Models
 1. Go to **Models** tab
-2. Confirm models are available:
-   - `claude-sonnet-4-5` (green status)
-   - `gemini-3-flash` (green status)
-3. Note quota percentages (should be >0%)
+2. Confirm models are available (`claude-sonnet-4-5`, `gemini-3-flash`) and check quota percentages.
 
 ---
 
@@ -148,36 +134,25 @@ npm install -g openclaw@latest
 openclaw doctor
 ```
 
-**Interactive Prompts - Respond as follows:**
-
-| Prompt | Response | Key |
-|--------|----------|-----|
-| "Generate and configure a gateway token now?" | Yes | `Enter` |
-| "Create C:\Users\{USER}\.openclaw now?" | Yes | `y` + `Enter` |
-| "Create Session store dir...?" | Yes | `Enter` |
-| "Create OAuth dir...?" | Yes | `Enter` |
-| "Enable zsh shell completion...?" | No | `n` + `Enter` |
-| "Install gateway service now?" | No | `n` + `Enter` |
+**Interactive Prompts:**
+- "Generate and configure a gateway token now?": **Yes (Enter)**
+- "Create C:\Users\{USER}\.openclaw now?": **Yes (y)**
+- "Create Session store dir...?": **Yes (Enter)**
+- "Create OAuth dir...?": **Yes (Enter)**
+- "Enable zsh shell completion...?": **No (n)**
+- "Install gateway service now?": **No (n)**
 
 ### Step 2.3: Run Onboard (Telegram Setup)
 ```powershell
 openclaw onboard
 ```
 
-**Interactive Prompts - Respond as follows:**
-
-| Prompt | Response | Action |
-|--------|----------|--------|
-| "I understand this is powerful..." | Yes | `y` + `Enter` |
-| "Onboarding mode" | QuickStart | `Enter` |
-| "Model/auth provider" | Anthropic | Arrow keys to select, `Enter` |
-| "Anthropic auth method" | Anthropic API key | `Enter` |
-| "Enter Anthropic API key" | test | Type `test` + `Enter` |
-| "Default model" | Keep current | `Enter` |
-| "Select channel" | Telegram (Bot API) | `Enter` |
-| "Enter Telegram bot token" | Your token | Paste token + `Enter` |
-| "Configure skills now?" | No | `n` + `Enter` |
-| "Enable zsh shell completion?" | No | `n` + `Enter` |
+**Interactive Prompts:**
+- "Onboarding mode": **QuickStart**
+- "Model/auth provider": **Anthropic** (API Key -> `test`)
+- "Default model": **Keep current**
+- "Select channel": **Telegram (Bot API)** -> **Paste your Bot Token**
+- "Configure skills now?": **No (n)**
 
 ---
 
@@ -185,10 +160,7 @@ openclaw onboard
 
 ### Step 3.1: Locate Config File
 ```powershell
-# Windows path
-%USERPROFILE%\.openclaw\openclaw.json
-
-# Or open with VS Code
+# Windows path: %USERPROFILE%\.openclaw\openclaw.json
 code $env:USERPROFILE\.openclaw\openclaw.json
 ```
 
@@ -198,108 +170,51 @@ Replace entire file content with this template:
 
 ```json
 {
-  "messages": {
-    "ackReactionScope": "group-mentions"
-  },
+  "messages": { "ackReactionScope": "group-mentions" },
   "models": {
     "mode": "merge",
     "providers": {
       "antigravity-proxy": {
-        "baseUrl": "http://127.0.0.1:8080",
-        "apiKey": "test",
-        "api": "anthropic-messages",
-        "models": [
-          {
-            "id": "claude-sonnet-4-5",
-            "name": "Claude Sonnet 4.5 (Proxy)"
-          },
-          {
-            "id": "gemini-3-flash",
-            "name": "Gemini 3 Flash (Proxy)"
-          }
-        ]
+        "baseUrl": "http://127.0.0.1:8080", "apiKey": "test", "api": "anthropic-messages",
+        "models": [ { "id": "claude-sonnet-4-5", "name": "Claude Sonnet 4.5 (Proxy)" }, { "id": "gemini-3-flash", "name": "Gemini 3 Flash (Proxy)" } ]
       }
     }
   },
   "agents": {
     "defaults": {
       "maxConcurrent": 4,
-      "model": {
-        "primary": "antigravity-proxy/claude-sonnet-4-5"
-      },
-      "subagents": {
-        "maxConcurrent": 8
-      },
-      "compaction": {
-        "mode": "safeguard"
-      },
+      "model": { "primary": "antigravity-proxy/claude-sonnet-4-5" },
+      "subagents": { "maxConcurrent": 8 },
+      "compaction": { "mode": "safeguard" },
       "workspace": "C:\\Users\\YOUR_USERNAME\\.openclaw\\workspace"
     }
   },
   "gateway": {
     "mode": "local",
-    "auth": {
-      "mode": "token",
-      "token": "YOUR_GATEWAY_TOKEN_FROM_ONBOARD"
-    },
+    "auth": { "mode": "token", "token": "YOUR_GATEWAY_TOKEN_FROM_ONBOARD" },
     "port": 18789,
     "bind": "loopback",
-    "tailscale": {
-      "mode": "off",
-      "resetOnExit": false
-    }
+    "tailscale": { "mode": "off", "resetOnExit": false }
   },
-  "auth": {
-    "profiles": {
-      "anthropic:default": {
-        "provider": "anthropic",
-        "mode": "api_key"
-      }
-    }
-  },
-  "plugins": {
-    "entries": {
-      "telegram": {
-        "enabled": true
-      }
-    }
-  },
-  "channels": {
-    "telegram": {
-      "enabled": true,
-      "botToken": "YOUR_TELEGRAM_BOT_TOKEN"
-    }
-  },
-  "wizard": {
-    "lastRunAt": "2026-02-07T00:00:00.000Z",
-    "lastRunVersion": "2026.2.3-1",
-    "lastRunCommand": "onboard",
-    "lastRunMode": "local"
-  },
-  "meta": {
-    "lastTouchedVersion": "2026.2.3-1",
-    "lastTouchedAt": "2026-02-07T00:00:00.000Z"
-  }
+  "auth": { "profiles": { "anthropic:default": { "provider": "anthropic", "mode": "api_key" } } },
+  "plugins": { "entries": { "telegram": { "enabled": true } } },
+  "channels": { "telegram": { "enabled": true, "botToken": "YOUR_TELEGRAM_BOT_TOKEN" } },
+  "wizard": { "lastRunAt": "2026-02-07T00:00:00.000Z", "lastRunVersion": "2026.2.3-1", "lastRunCommand": "onboard", "lastRunMode": "local" },
+  "meta": { "lastTouchedVersion": "2026.2.3-1", "lastTouchedAt": "2026-02-07T00:00:00.000Z" }
 }
 ```
 
 ### Step 3.3: Required Replacements
-
 | Placeholder | Replace With | Example |
 |-------------|--------------|---------|
 | `YOUR_USERNAME` | Windows username | `Lemos` |
-| `YOUR_GATEWAY_TOKEN_FROM_ONBOARD` | Token from onboard step | `e42a75fc837363e7f82dc28b8edb855c3481fb616944e52d` |
-| `YOUR_TELEGRAM_BOT_TOKEN` | BotFather token | `8413661068:AAFgjBh_B92QmdvH7WQvT701ubJHkFtllvw` |
+| `YOUR_GATEWAY_TOKEN_FROM_ONBOARD` | Token from onboard/env | `e42a75fc83...` |
+| `YOUR_TELEGRAM_BOT_TOKEN` | BotFather token | `841366...` |
 
 ### Step 3.4: Critical Configuration Notes
-
 > ⚠️ **MUST USE `127.0.0.1`** - Do NOT use `localhost`!
 > DNS resolution issues cause connection failures with `localhost`.
-
-> ⚠️ **DO NOT ADD** these fields to models array (causes config errors):
-> - `inputTypes`
-> - `reasoning`
-> - `contextWindow`
+> ⚠️ Do NOT add `inputTypes`, `reasoning`, or `contextWindow` fields.
 
 ---
 
@@ -314,12 +229,7 @@ openclaw gateway run
 ```
 
 ### Step 4.3: Verify Startup
-Success logs should show:
-```
-🦞 OpenClaw 2026.x.x
-[telegram] starting provider (@YOUR_BOT_NAME)
-[telegram] autoSelectFamily=false
-```
+Success logs should show: `[telegram] starting provider (@YOUR_BOT_NAME)`
 
 > ⚠️ **Keep this terminal window open** - closing it stops the gateway.
 
@@ -328,27 +238,15 @@ Success logs should show:
 ## Phase 5: Telegram Pairing
 
 ### Step 5.1: Initiate Pairing
-1. Open Telegram
-2. Find your bot (search `@YOUR_BOT_NAME`)
-3. Send any message (e.g., "hello")
+1. Open Telegram -> Find your bot -> Send "hello".
 
 ### Step 5.2: Receive Pairing Code
-Bot will reply:
-```
-OpenClaw: access not configured.
-Your Telegram user id: XXXXXXXXXX
-Pairing code: XXXXXXXX
-```
+Bot will reply: `Pairing code: XXXXXXXX`
 
 ### Step 5.3: Approve Pairing
 Run in terminal:
 ```powershell
 openclaw pairing approve telegram <PAIRING_CODE>
-```
-
-Example:
-```powershell
-openclaw pairing approve telegram ZB6VNF6M
 ```
 
 ### Step 5.4: Verify Success
@@ -359,16 +257,8 @@ Send another message to your bot → Receive AI auto-response!
 ## Daily Operations
 
 ### Startup Sequence
-
-**Terminal 1 - Proxy:**
-```powershell
-antigravity-claude-proxy start
-```
-
-**Terminal 2 - Gateway:**
-```powershell
-openclaw gateway run
-```
+**Terminal 1 - Proxy:** `antigravity-claude-proxy start`
+**Terminal 2 - Gateway:** `openclaw gateway run`
 
 ### Shutdown Sequence
 Press `Ctrl+C` in each terminal to gracefully stop.
@@ -377,7 +267,6 @@ Press `Ctrl+C` in each terminal to gracefully stop.
 ```powershell
 # Check proxy status
 curl http://localhost:8080/health
-
 # Check channels
 openclaw channels status
 ```
@@ -387,55 +276,35 @@ openclaw channels status
 ## Troubleshooting
 
 ### HTTP 401: invalid x-api-key
-**Cause:** OpenClaw not using proxy provider
 **Solution:** Verify `models.providers.antigravity-proxy` section exists in config
 
 ### Connection Refused
-**Cause:** Proxy not running
 **Solution:** Start proxy before gateway: `antigravity-claude-proxy start`
 
 ### Invalid Config Error
-**Cause:** Invalid schema fields
 **Solution:** Remove `inputTypes`, `reasoning`, `contextWindow` from models array
 
 ### Pairing Required Message
-**Cause:** Telegram user not approved
 **Solution:** Run `openclaw pairing approve telegram <CODE>`
 
 ### localhost Connection Fails
-**Cause:** DNS resolution issue
 **Solution:** Use `127.0.0.1` instead of `localhost` in config
 
 ### No Models Available in Proxy
-**Cause:** Account not linked
-**Solution:** 
-1. Open `http://localhost:8080`
-2. Go to Accounts → Add Account
-3. Complete Google OAuth
+**Solution:** Open `http://localhost:8080` -> Accounts -> Add Account -> Complete Google OAuth
 
 ---
 
 ## Reference Files
 
 ### Credentials Storage
-```
-Antisingularity/credentials/telegram-bridge.env
-```
+`credentials/telegram-bridge.env`
 
 ### Configuration File
-```
-%USERPROFILE%\.openclaw\openclaw.json
-```
-
-### Proxy Repository
-```
-Antisingularity/../antigravity-claude-proxy/
-```
+`%USERPROFILE%\.openclaw\openclaw.json`
 
 ### Proxy Dashboard
-```
-http://localhost:8080
-```
+`http://localhost:8080`
 
 ### Important Ports
 | Service | Port |
@@ -448,18 +317,9 @@ http://localhost:8080
 
 ## Quick Reference Card
 
-```
-┌────────────────────────────────────────────────────┐
-│           TELEGRAM BRIDGE QUICK START              │
-├────────────────────────────────────────────────────┤
-│  1. antigravity-claude-proxy start     (Terminal 1)│
-│  2. openclaw gateway run               (Terminal 2)│
-│                                                    │
-│  First-time only:                                  │
-│  3. Send message to bot                            │
-│  4. openclaw pairing approve telegram <CODE>       │
-└────────────────────────────────────────────────────┘
-```
+1. **Terminal 1:** `antigravity-claude-proxy start`
+2. **Terminal 2:** `openclaw gateway run`
+3. **First-time only:** Send message to bot -> `openclaw pairing approve telegram <CODE>`
 
 ---
 
@@ -470,7 +330,7 @@ The proxy stores account connections (including OAuth tokens) in a JSON file.
 Backup this file to save your logged-in accounts:
 
 ```powershell
-Copy-Item -Path "$env:USERPROFILE\.config\antigravity-proxy\accounts.json" -Destination "Antisingularity\credentials\proxy-accounts.json"
+Copy-Item -Path "$env:USERPROFILE\.config\antigravity-proxy\accounts.json" -Destination ".\credentials\proxy-accounts.json"
 ```
 
 ### Restoring Credentials
@@ -481,5 +341,5 @@ To restore your accounts on a new machine or session:
 New-Item -ItemType Directory -Path "$env:USERPROFILE\.config\antigravity-proxy" -Force
 
 # Restore file
-Copy-Item -Path "Antisingularity\credentials\proxy-accounts.json" -Destination "$env:USERPROFILE\.config\antigravity-proxy\accounts.json" -Force
+Copy-Item -Path ".\credentials\proxy-accounts.json" -Destination "$env:USERPROFILE\.config\antigravity-proxy\accounts.json" -Force
 ```

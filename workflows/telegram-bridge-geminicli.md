@@ -117,6 +117,10 @@ Replace contents with this verify configuration:
 
 ```json
 {
+  "browser": {
+    "enabled": true,
+    "defaultProfile": "openclaw"
+  },
   "auth": {
     "profiles": {
       "google-gemini-cli:default": {
@@ -160,6 +164,15 @@ Replace contents with this verify configuration:
 1. **`dmPolicy`: "open"** - Allows anyone to message the bot (easiest for testing).
 2. **`groupPolicy`: "disabled"** - Must be explicitly set to "disabled" or "allowlist" to avoid validation errors.
 3. **`allowFrom`: ["*"]** - Required when `dmPolicy` is "open".
+4. **`browser` Block**: Must be at the **root level** (not inside plugins).
+
+### Step 3.4: Browser Configuration Check
+OpenClaw includes a browser automation plugin. Verify it detects your browser (Chrome/Edge):
+
+```powershell
+openclaw browser --browser-profile openclaw status
+```
+*Expected Output: "Status: healthy", "detectedPath: ...chrome.exe"*
 
 ---
 

@@ -35,8 +35,8 @@ graph LR
 **Components:**
 | Component | Role | Port |
 |-----------|------|------|
-| antigravity-claude-proxy | Exposes IDE models as OpenAI-compatible API | 8080 |
-| OpenClaw Gateway | Bridges Telegram to AI backend | 18789 |
+| [antigravity-claude-proxy](https://github.com/badrisnarayanan/antigravity-claude-proxy) | Exposes IDE models as OpenAI-compatible API | 8080 |
+| [OpenClaw Gateway](https://github.com/openclaw/openclaw) | Bridges Telegram to AI backend | 18789 |
 | Antigravity IDE | Provides Claude/Gemini models | N/A |
 
 ---
